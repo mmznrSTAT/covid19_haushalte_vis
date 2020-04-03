@@ -11,14 +11,17 @@
 		kanton = 'ZH',
 		projectionZH = 2056;
 	var variableLabels = {'1_Alte_TT': 'Haushalte mit Risikopersonen', '2_Fam_TT': 'Haushalte mit potenziellem Kinderbetreuungsproblem', '3_Rest_TT':'Andere Haushalte'};
+	var unterGr1 = {11_Alleine_A;12_Paar+_beide_alt_AA;13_Paar+_eine_alt_AE}
 
   let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/covid19_haushalte_vis/';
   let productionBaseUrlMap = 'https://www.web.statistik.zh.ch/cms_vis/Ressources_Maps/'+mapYear;
   let dataPath = 'data/HH_Gruppen_GemZH_2019.csv',
+  	metaPath = 'data/meta.tsv',
   	mapPath = "data/GemeindeGrosseSeeOhneExklave_gen_epsg2056_F_KTZH_"+mapYear+".json";
 
 	if (location.protocol !== "file:") {
 		 dataPath = productionBaseUrlData+dataPath;
+		 metaPath = productionBaseUrlData+metaPath;
 			mapPath = productionBaseUrlData+mapPath;
 	}
 
@@ -134,11 +137,14 @@
 	//Daten laden
 	Promise.all([
 		d3.dsv(';',dataPath),
-		d3.json(mapPath)
+		d3.json(mapPath),
+		d3.tsv(metaPath),
 	]).then(function(data) {
 		var mapData = data[1];
 		var gpData = data[0];
+		var metaData = data[2];
 		console.log(gpData);
+		console.log(metaData);
 
 		var indExtent = d3.extent(gpData, d=> +d[indikator]);
 
