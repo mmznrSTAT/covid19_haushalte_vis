@@ -12,9 +12,9 @@
 		projectionZH = 2056;
 
 
-  let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/Gemeinden_Gemeindeordnungen_Karte/';
+  let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/covid19_haushalte_vis/';
   let productionBaseUrlMap = 'https://www.web.statistik.zh.ch/cms_vis/Ressources_Maps/'+mapYear;
-  let dataPath = 'data/RevisionGODaten.csv',
+  let dataPath = 'data/HH_Gruppen_GemZH_2019.csv',
   	mapPath = "data/GemeindeGrosseSeeOhneExklave_gen_epsg2056_F_KTZH_"+mapYear+".json";
 
 	if (location.protocol !== "file:") {
@@ -122,9 +122,14 @@
 
 	var scale = 1;
 
-  var colorScale = d3.scaleOrdinal()
-    .range(['rgb(62,167,67)','rgb(255,204,0)','lightgrey']);
+  // var colorScale = d3.scaleOrdinal()
+  //   .range(['rgb(62,167,67)','rgb(255,204,0)','lightgrey']);
     //.interpolate(d3.interpolateHsl);
+
+  var colorScale = d3.scaleSequential()
+  	.interpolator(d3.interpolateBlues);
+  var indikator = '1_Alte_TT';
+
 
 	//Daten laden
 	Promise.all([
@@ -135,21 +140,22 @@
 		var gpData = data[0];
 		console.log(gpData);
 
+		var indExtent = d3.extent(gpData, d=> +d[indikator]);
+		console.log(indExtent);
+
 		colorScale
-			.domain(['Vom Regierungsrat genehmigt','In Vorprüfung','Revision ausstehend'])
+			.domain(indExtent);
+
+
 
 		//Combine Data
 		for(i=0;i<mapData.features.length;i++) {
 			var thisData = gpData.filter(function(el) {
 				return el.bfs == mapData.features[i].properties.GDE_ID;
 			})
-			if(thisData.length>0) {
-				mapData.features[i].properties.status =  thisData[0].status;
-			} else {
-				mapData.features[i].properties.status = 'Revision ausstehend';
-			}
-
+			mapData.features[i].properties.data = thisData[0];
 		}
+		console.log(mapData)
 		renderMap(mapData);
 		colorMap(mapData,jahr);
 		legende(colorScale)
@@ -345,7 +351,7 @@
 			d3.selectAll('.gemeinde')
 				.style('fill', function(d) {
 					if(d.properties.ART_N != 'See') {
-						return colorScale(d.properties.status);
+						return colorScale(d.properties.data[indikator]);
 						} else {
 						//return 'url(#hash4_4)';
 						return 'url(#mainGradient)';
