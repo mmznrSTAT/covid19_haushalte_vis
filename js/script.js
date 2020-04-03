@@ -10,7 +10,7 @@
 		jahr = 2018,
 		kanton = 'ZH',
 		projectionZH = 2056;
-
+	var variableLabels = {'1_Alte_TT': 'Haushalte mit Risikopersonen', '2_Fam_TT': 'Haushalte mit potenziellem Kinderbetreuungsproblem', '3_Rest_TT':'Andere Haushalte'};
 
   let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/covid19_haushalte_vis/';
   let productionBaseUrlMap = 'https://www.web.statistik.zh.ch/cms_vis/Ressources_Maps/'+mapYear;
@@ -54,7 +54,7 @@
 		.attr('id', 'desc');
 
 	var svgMapGr = svgMap.append('g').attr('id', 'svgMapGr');
-	var legendeGr = svgMap.append('g').attr('id','legendeGr').attr('transform', 'translate('+(0)+','+(-20)+')scale('+scale+')');
+	var legendeGr = svgMap.append('g').attr('id','legendeGr').attr('transform', 'translate('+(width/2+180)+','+(-10)+')scale('+scale+')');
 
 	var mapPfade = d3.select('#svgMap').append('g').attr('id', 'mapPfade').attr('transform', 'translate('+(10)+','+(0)+')');
 
@@ -141,6 +141,10 @@
 		console.log(gpData);
 
 		var indExtent = d3.extent(gpData, d=> +d[indikator]);
+
+		indExtent[0] = Math.floor(indExtent[0]/5)*5;
+
+		indExtent[1] = Math.ceil(indExtent[1]/5)*5;
 		console.log(indExtent);
 
 		colorScale
@@ -163,12 +167,13 @@
 	});
 
 	function legende(farbskala) {
-		var farbDataC = farbskala.domain(),
-			farbDataT = farbskala.domain(),
+		var stepSize = 5;
+		var farbDataC = d3.range(farbskala.domain()[0], farbskala.domain()[1]+stepSize, stepSize).sort(d3.descending);
+			farbDataT = farbDataC,
 			rectH = 20,
 			rectW = 20;
-			console.log(farbskala.domain());
-			console.log(farbskala.range());
+			console.log(farbDataC);
+			//console.log(farbskala.range());
 
 		var legRect = legendeGr.selectAll('rect.legende')
 			.data(farbDataC);
@@ -180,7 +185,9 @@
 			.attr('y', (d,i) => (i+1)*20+2)
 			.attr('height', rectH-2)
 			.attr('width', rectW-2)
-			.attr('fill', d => farbskala(d));
+			.attr('fill', d => farbskala(d))
+			.attr('stroke', 'lightgrey')
+			.attr('stroke-width', 0.5);
 
 		legRect
 			.attr('y', i => i*20)
@@ -415,7 +422,7 @@
 		transX = (width+80)/2;
 		mapFit('gemeinde');
 
-		legendeGr.attr('transform', 'translate('+(0)+','+(-20)+')scale('+scale+')')
+		legendeGr.attr('transform', 'translate('+(width/2+150)+','+(-20)+')scale('+scale+')')
 	}
 
 	// Call the resize function whenever a resize event occurs
