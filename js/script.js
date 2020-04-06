@@ -10,10 +10,6 @@
 		jahr = 2018,
 		kanton = 'ZH',
 		projectionZH = 2056;
-	var variableLabels = {'1_Alte_TT': 'Haushalte mit Risikopersonen', '2_Fam_TT': 'Haushalte mit potenziellem Kinderbetreuungsproblem', '3_Rest_TT':'Andere Haushalte'};
-	var unterGr1 = {'11_Alleine_A': 'Alleinstehend',
-		'12_Paar+_beide_alt_AA': 'Paar, beide Personen ≥65	Umfasst auch jene Haushalte, in denen mehr als zwei Personen ≥65 leben',
-		'13_Paar+_eine_alt_AE': 'Paar, eine Person ≥65 und eine Person <65	Umfasst auch jene Haushalte, in denen neben der Person ≥65 mehrere Personen <65 leben'}
 
   let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/covid19_haushalte_vis/';
   let productionBaseUrlMap = 'https://www.web.statistik.zh.ch/cms_vis/Ressources_Maps/'+mapYear;
@@ -133,7 +129,8 @@
 
   var colorScale = d3.scaleSequential()
   	.interpolator(d3.interpolateBlues);
-  var indikator = '1_Alte_TT';
+  var indikator = '1_Alte_TT',
+  	metaData;
 
 
 	//Daten laden
@@ -144,8 +141,9 @@
 	]).then(function(data) {
 		var mapData = data[1];
 		var gpData = data[0];
-		var metaData = data[2];
+		metaData = data[2];
 		console.log(gpData);
+		metaData = metaData.filter(el => el.var_name == indikator)
 		console.log(metaData);
 
 		var indExtent = d3.extent(gpData, d=> +d[indikator]);
@@ -288,12 +286,14 @@
 		function mouseOver(thisData, that, bbox, flag) {
 			var thisBfs = thisData.properties.GDE_ID;
 
+
+
 			d3.select('#karte').selectAll('path.gemeinden')
 				.style('fill-opacity', 0.3)
 				.style('stroke-opacity', 0.3);
 
-			var mouseOverRW = 217/scale,
-				mouseOverRH = 48;
+			var mouseOverRW = (96*metaData.length )/scale,
+				mouseOverRH = 22+metaData.length*22;
 			//Position Tooltip
 			var xPos = bbox.x+bbox.width/2,
 				yPos = bbox.y+bbox.height/2;
@@ -313,6 +313,7 @@
 				.attr('id','mouseOverT')
 				.attr('transform', 'translate('+(xPos)+','+(yPos)+')');
 
+			console.log(thisData.properties)
 			mouseOverP.append('path')
 				.attr("class", 'mouse')
 				.attr("d", that.attr('d'))
@@ -342,14 +343,34 @@
 				.style('font-weight', 'bold')
 				.text(thisData.properties.GDE_N)
 				.style('font-family', 'Helvetica');
-
 			mouseOverT.append('text')
-				.attr('x', 2/scale)
+				.attr('x', mouseOverRW-12)
+				.style('text-anchor','end')
 				.attr('y', 16/scale)
-				.attr('dy', '1.4em')
 				.style('font-size', 14/scale+'px')
-				.text(thisData.properties.status)
+				.style('font-weight', 'bold')
+				.text(thisData.properties.data[indikator])
 				.style('font-family', 'Helvetica');
+
+			for (let i = 0;i<metaData.length;i++) {
+				mouseOverT.append('text')
+					.attr('x', 2/scale)
+					.attr('y', 20/scale)
+					.attr('dy', 1.2*(i+1)+'em')
+					.style('font-size', 14/scale+'px')
+					.text(metaData[i].ugru_label)
+					.style('font-family', 'Helvetica');
+
+				mouseOverT.append('text')
+					.attr('x', mouseOverRW-12)
+					.attr('y', 20/scale)
+					.attr('dy', 1.2*(i+1)+'em')
+					.style('font-size', 14/scale+'px')
+					.style('text-anchor','end')
+					.text(thisData.properties.data[metaData[i].ugru_var])
+					.style('font-family', 'Helvetica');
+
+			}
 		}
 
 		function mouseOut() {

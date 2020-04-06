@@ -1,7 +1,7 @@
-gru_code	gru_label	gru_label2	ugru_code	ugru_label	ugru_bem
-1	Haushalte mit Risikopersonen	Haushalte mit Personen im Alter von ≥65 Jahren	11	Alleinstehend
-1	Haushalte mit Risikopersonen	Haushalte mit Personen im Alter von ≥65 Jahren	12	Paar, beide Personen ≥65	Umfasst auch jene Haushalte, in denen mehr als zwei Personen ≥65 leben
-1	Haushalte mit Risikopersonen	Haushalte mit Personen im Alter von ≥65 Jahren	13	Paar, eine Person ≥65 und eine Person <65	Umfasst auch jene Haushalte, in denen neben der Person ≥65 mehrere Personen <65 leben
-2	Haushalte mit potenziellem Kinderbetreuungsproblem	Haushalte mit mindestens einem kleinen Kind im Alter von ≤12 Jahren	21	Alleinerziehend
-2	Haushalte mit potenziellem Kinderbetreuungsproblem	Haushalte mit mindestens einem kleinen Kind im Alter von ≤12 Jahren	22	Elternpaar	Umfasst auch jene Haushalte, in denen mehr als zwei Erwachsene <65 leben
-3	Andere Haushalte	Alle anderen Haushaltskonstellationen
+var_name	gru_code	gru_label	gru_label2	ugru_code	ugru_label	ugru_bem	ugru_var
+1_Alte_TT	1	Haushalte mit Risikopersonen	Haushalte mit Personen im Alter von ≥65 Jahren	11	Alleinstehend		11_Alleine_A
+1_Alte_TT	1	Haushalte mit Risikopersonen	Haushalte mit Personen im Alter von ≥65 Jahren	12	Paar, beide Personen ≥65	Umfasst auch jene Haushalte, in denen mehr als zwei Personen ≥65 leben	"12_Paar+_beide_alt_AA"
+1_Alte_TT	1	Haushalte mit Risikopersonen	Haushalte mit Personen im Alter von ≥65 Jahren	13	Paar, eine Person ≥65 und eine <65	Umfasst auch jene Haushalte, in denen neben der Person ≥65 mehrere Personen <65 leben	"13_Paar+_eine_alt_AE"
+2_Fam_TT	2	Haushalte mit potenziellem Kinderbetreuungsproblem	Haushalte mit mindestens einem kleinen Kind im Alter von ≤12 Jahren	21	Alleinerziehend		21_Allein_klKinder
+2_Fam_TT	2	Haushalte mit potenziellem Kinderbetreuungsproblem	Haushalte mit mindestens einem kleinen Kind im Alter von ≤12 Jahren	22	Elternpaar	Umfasst auch jene Haushalte, in denen mehr als zwei Erwachsene <65 leben	"22_Paar+_klKinder"
+3_Rest_TT	3	Andere Haushalte	Alle anderen Haushaltskonstellationen
