@@ -1,7 +1,5 @@
-(function () {
 
-	window.onload = function () {
-
+	function render(ind) {
 	//Parameter
 	const categories = 'INDIKATOR_NAME',
 		values = 'INDIKATOR_VALUE',
@@ -129,7 +127,7 @@
 
   var colorScale = d3.scaleSequential()
   	.interpolator(d3.interpolateBlues);
-  var indikator = '1_Alte_TT',
+  var indikator = ind,
   	metaData;
 
 
@@ -292,7 +290,7 @@
 				.style('fill-opacity', 0.3)
 				.style('stroke-opacity', 0.3);
 
-			var mouseOverRW = (96*metaData.length )/scale,
+			var mouseOverRW = (90*metaData.length )/scale,
 				mouseOverRH = 22+metaData.length*22;
 			//Position Tooltip
 			var xPos = bbox.x+bbox.width/2,
@@ -458,4 +456,4 @@
 	d3.select(window).on('resize', resize);
 
 	};
-}());
+
