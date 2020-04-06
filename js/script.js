@@ -11,7 +11,9 @@
 		kanton = 'ZH',
 		projectionZH = 2056;
 	var variableLabels = {'1_Alte_TT': 'Haushalte mit Risikopersonen', '2_Fam_TT': 'Haushalte mit potenziellem Kinderbetreuungsproblem', '3_Rest_TT':'Andere Haushalte'};
-	var unterGr1 = {11_Alleine_A;12_Paar+_beide_alt_AA;13_Paar+_eine_alt_AE}
+	var unterGr1 = {'11_Alleine_A': 'Alleinstehend',
+		'12_Paar+_beide_alt_AA': 'Paar, beide Personen ≥65	Umfasst auch jene Haushalte, in denen mehr als zwei Personen ≥65 leben',
+		'13_Paar+_eine_alt_AE': 'Paar, eine Person ≥65 und eine Person <65	Umfasst auch jene Haushalte, in denen neben der Person ≥65 mehrere Personen <65 leben'}
 
   let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/covid19_haushalte_vis/';
   let productionBaseUrlMap = 'https://www.web.statistik.zh.ch/cms_vis/Ressources_Maps/'+mapYear;
