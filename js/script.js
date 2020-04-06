@@ -10,15 +10,18 @@
 		jahr = 2018,
 		kanton = 'ZH',
 		projectionZH = 2056;
+	var variableLabels = {'1_Alte_TT': 'Haushalte mit Risikopersonen', '2_Fam_TT': 'Haushalte mit potenziellem Kinderbetreuungsproblem', '3_Rest_TT':'Andere Haushalte'};
+	var unterGr1 = {11_Alleine_A;12_Paar+_beide_alt_AA;13_Paar+_eine_alt_AE}
 
-
-  let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/Gemeinden_Gemeindeordnungen_Karte/';
+  let productionBaseUrlData = 'https://www.web.statistik.zh.ch/cms_vis/covid19_haushalte_vis/';
   let productionBaseUrlMap = 'https://www.web.statistik.zh.ch/cms_vis/Ressources_Maps/'+mapYear;
-  let dataPath = 'data/RevisionGODaten.csv',
+  let dataPath = 'data/HH_Gruppen_GemZH_2019.csv',
+  	metaPath = 'data/meta.tsv',
   	mapPath = "data/GemeindeGrosseSeeOhneExklave_gen_epsg2056_F_KTZH_"+mapYear+".json";
 
 	if (location.protocol !== "file:") {
 		 dataPath = productionBaseUrlData+dataPath;
+		 metaPath = productionBaseUrlData+metaPath;
 			mapPath = productionBaseUrlData+mapPath;
 	}
 
@@ -54,7 +57,7 @@
 		.attr('id', 'desc');
 
 	var svgMapGr = svgMap.append('g').attr('id', 'svgMapGr');
-	var legendeGr = svgMap.append('g').attr('id','legendeGr').attr('transform', 'translate('+(0)+','+(-20)+')scale('+scale+')');
+	var legendeGr = svgMap.append('g').attr('id','legendeGr').attr('transform', 'translate('+(width/2+180)+','+(-10)+')scale('+scale+')');
 
 	var mapPfade = d3.select('#svgMap').append('g').attr('id', 'mapPfade').attr('transform', 'translate('+(10)+','+(0)+')');
 
@@ -122,34 +125,47 @@
 
 	var scale = 1;
 
-  var colorScale = d3.scaleOrdinal()
-    .range(['rgb(62,167,67)','rgb(255,204,0)','lightgrey']);
+  // var colorScale = d3.scaleOrdinal()
+  //   .range(['rgb(62,167,67)','rgb(255,204,0)','lightgrey']);
     //.interpolate(d3.interpolateHsl);
+
+  var colorScale = d3.scaleSequential()
+  	.interpolator(d3.interpolateBlues);
+  var indikator = '1_Alte_TT';
+
 
 	//Daten laden
 	Promise.all([
 		d3.dsv(';',dataPath),
-		d3.json(mapPath)
+		d3.json(mapPath),
+		d3.tsv(metaPath),
 	]).then(function(data) {
 		var mapData = data[1];
 		var gpData = data[0];
+		var metaData = data[2];
 		console.log(gpData);
+		console.log(metaData);
+
+		var indExtent = d3.extent(gpData, d=> +d[indikator]);
+
+		indExtent[0] = Math.floor(indExtent[0]/5)*5;
+
+		indExtent[1] = Math.ceil(indExtent[1]/5)*5;
+		console.log(indExtent);
 
 		colorScale
-			.domain(['Vom Regierungsrat genehmigt','In Vorprüfung','Revision ausstehend'])
+			.domain(indExtent);
+
+
 
 		//Combine Data
 		for(i=0;i<mapData.features.length;i++) {
 			var thisData = gpData.filter(function(el) {
 				return el.bfs == mapData.features[i].properties.GDE_ID;
 			})
-			if(thisData.length>0) {
-				mapData.features[i].properties.status =  thisData[0].status;
-			} else {
-				mapData.features[i].properties.status = 'Revision ausstehend';
-			}
-
+			mapData.features[i].properties.data = thisData[0];
 		}
+		console.log(mapData)
 		renderMap(mapData);
 		colorMap(mapData,jahr);
 		legende(colorScale)
@@ -157,12 +173,13 @@
 	});
 
 	function legende(farbskala) {
-		var farbDataC = farbskala.domain(),
-			farbDataT = farbskala.domain(),
+		var stepSize = 5;
+		var farbDataC = d3.range(farbskala.domain()[0], farbskala.domain()[1]+stepSize, stepSize).sort(d3.descending);
+			farbDataT = farbDataC,
 			rectH = 20,
 			rectW = 20;
-			console.log(farbskala.domain());
-			console.log(farbskala.range());
+			console.log(farbDataC);
+			//console.log(farbskala.range());
 
 		var legRect = legendeGr.selectAll('rect.legende')
 			.data(farbDataC);
@@ -174,7 +191,9 @@
 			.attr('y', (d,i) => (i+1)*20+2)
 			.attr('height', rectH-2)
 			.attr('width', rectW-2)
-			.attr('fill', d => farbskala(d));
+			.attr('fill', d => farbskala(d))
+			.attr('stroke', 'lightgrey')
+			.attr('stroke-width', 0.5);
 
 		legRect
 			.attr('y', i => i*20)
@@ -345,7 +364,7 @@
 			d3.selectAll('.gemeinde')
 				.style('fill', function(d) {
 					if(d.properties.ART_N != 'See') {
-						return colorScale(d.properties.status);
+						return colorScale(d.properties.data[indikator]);
 						} else {
 						//return 'url(#hash4_4)';
 						return 'url(#mainGradient)';
@@ -409,7 +428,7 @@
 		transX = (width+80)/2;
 		mapFit('gemeinde');
 
-		legendeGr.attr('transform', 'translate('+(0)+','+(-20)+')scale('+scale+')')
+		legendeGr.attr('transform', 'translate('+(width/2+150)+','+(-20)+')scale('+scale+')')
 	}
 
 	// Call the resize function whenever a resize event occurs

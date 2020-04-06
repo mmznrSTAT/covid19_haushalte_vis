@@ -1,0 +1,7 @@
+gru_code	gru_label	gru_label2	ugru_code	ugru_label	ugru_bem
+1	Haushalte mit Risikopersonen	Haushalte mit Personen im Alter von ≥65 Jahren	11	Alleinstehend
+1	Haushalte mit Risikopersonen	Haushalte mit Personen im Alter von ≥65 Jahren	12	Paar, beide Personen ≥65	Umfasst auch jene Haushalte, in denen mehr als zwei Personen ≥65 leben
+1	Haushalte mit Risikopersonen	Haushalte mit Personen im Alter von ≥65 Jahren	13	Paar, eine Person ≥65 und eine Person <65	Umfasst auch jene Haushalte, in denen neben der Person ≥65 mehrere Personen <65 leben
+2	Haushalte mit potenziellem Kinderbetreuungsproblem	Haushalte mit mindestens einem kleinen Kind im Alter von ≤12 Jahren	21	Alleinerziehend
+2	Haushalte mit potenziellem Kinderbetreuungsproblem	Haushalte mit mindestens einem kleinen Kind im Alter von ≤12 Jahren	22	Elternpaar	Umfasst auch jene Haushalte, in denen mehr als zwei Erwachsene <65 leben
+3	Andere Haushalte	Alle anderen Haushaltskonstellationen
