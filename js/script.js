@@ -290,7 +290,7 @@
 				.style('fill-opacity', 0.3)
 				.style('stroke-opacity', 0.3);
 
-			var mouseOverRW = (90*metaData.length )/scale,
+			var mouseOverRW = (90*d3.max([2,metaData.length]))/scale,
 				mouseOverRH = 22+metaData.length*22;
 			//Position Tooltip
 			var xPos = bbox.x+bbox.width/2,
