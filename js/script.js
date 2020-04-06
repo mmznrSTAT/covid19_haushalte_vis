@@ -125,8 +125,18 @@
   //   .range(['rgb(62,167,67)','rgb(255,204,0)','lightgrey']);
     //.interpolate(d3.interpolateHsl);
 
-  var colorScale = d3.scaleSequential()
-  	.interpolator(d3.interpolateBlues);
+  var colorScale = d3.scaleSequential();
+
+  if (ind.split('_')[0]==1) {
+  	colorScale.interpolator(d3.interpolateBlues);
+  } else if (ind.split('_')[0]==2) {
+  	colorScale.interpolator(d3.interpolateGreens);
+  } else if (ind.split('_')[0]==2) {
+  	colorScale.interpolator(d3.interpolateGreys);
+  }
+
+
+
   var indikator = ind,
   	metaData;
 
