@@ -1,2 +1,2 @@
-# Allgemeines_D3_VorlageBarchart
+# Visualisierung zu Risikohaushalten
 
